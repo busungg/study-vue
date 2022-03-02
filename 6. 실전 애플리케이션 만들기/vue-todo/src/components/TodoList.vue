@@ -1,7 +1,7 @@
 <template>
   <section>
-    <ul>
-      <li v-for="(todoItem, index) in todoItems" class="shadow">
+    <TransitionGroup name="list" tag="ul">
+      <li v-for="(todoItem, index) in propsdata" :key="todoItem" class="shadow">
         <!-- index는 v-for 디렉티브에서 기본적으로 제공하는 변수 입니다. -->
         <i class="checkBtn fas fa-check" aria-hidden="true"></i>
         {{ todoItem }}
@@ -13,28 +13,16 @@
           <i class="far fa-trash-alt" aira-hidden="true"></i>
         </span>
       </li>
-    </ul>
+    </TransitionGroup>
   </section>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      todoItems: []
-    };
-  },
-  created() {
-    if (localStorage.length > 0) {
-      for (var i = 0; i < localStorage.length; i++) {
-        this.todoItems.push(localStorage.key(i));
-      }
-    }
-  },
+  props: ["propsdata"],
   methods: {
     removeTodo(todoItem, index) {
-      localStorage.removeItem(todoItem);
-      this.todoItems.splice(index, 1);
+      this.$emit("removeTodo", todoItem, index);
     }
   }
 };
@@ -68,5 +56,18 @@ li {
 .removeBtn {
   margin-left: auto;
   color: #de4343;
+}
+</style>
+
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
